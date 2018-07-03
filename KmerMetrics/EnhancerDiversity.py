@@ -20,8 +20,6 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T')
     for key in downreg.keys():
         freqfunc.freq_compile_from_string(downregfreq, gene_seq[key], kmerlength)
     downregfreq_sorted = freqfunc.fsortbycount(downregfreq)
-    #NOTE: THIS IS IMPERFECT BC IT GOES BY TOP CUTOFF OF GIVEN LIST, AND FORGOES THOSE OF OPP LIST
-    #POSSIBLE FIX: DO IT FOR ENTIRE LENGTH OF LIST
     #LST MUST BE SORTED
     upregdiff = {}
     downregdiff = {}
@@ -72,18 +70,6 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T')
         print ("%s / %s = %s" % (count, len(downregdiffsorted), count/ len(downregdiffsorted)))  
     except ZeroDivisionError:
         pass
-    def nuc_content(sortedlst, cutoff, nuc): #dct = upregdiff or downregdiff, nuc = 'A', 'C' ,'T', 'G' 
-        #UPREG SHOULD BE SORTED GREATEST TO LEAST, DOWNREG LEAST TO GREATEST
-            nuc = nuc.upper()
-            nuccount = []
-            for i in range(cutoff):
-                count = 0
-                for x in sortedlst[i][0]:
-                    if x.upper() == nuc:
-                        count +=1
-                nuccount.append(count)
-            avg = sum(nuccount) / len(nuccount)
-            print ('Average number of %s in %s-mer: %s' %(nuc, kmerlength, avg))
     numcutoff = 200
     if len(upregdiffsorted) < 200 or len(downregdiffsorted) < 200:
         if len(upregdiffsorted) > len(downregdiffsorted):
@@ -91,9 +77,5 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T')
         else:
             numcutoff = len(upregdiffsorted)
     print ('Cutoff:', numcutoff)
-    print ('Upregulated')
-    nuc_content(upregdiffsorted, numcutoff, nuc)
-    print ('Downregulated')
-    nuc_content(downregdiffsorted, numcutoff, nuc)
     outputlst = [freq_dict, upregfreq, downregfreq, upregdiff, downregdiff] 
     return outputlst
