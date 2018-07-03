@@ -307,13 +307,14 @@ def stringrandseq(string, dinucshuff, timestoshuffle):
     return shuffled_kmers_str
 
 #### COMPILE DATA ON K-MERS FROM RANDOM FILE ####
-#params: shuffledfile (filename of file containing shuffled sequences), randdict (empty dictionary unless compiling from mult files)
+#params: shuffledfile (filename of file containing shuffled sequences), randdict (empty dictionary unless compiling from mult files),
+#kmerlength: desired number of nucleotides in k-mer
 
-def filerandseq_basicanalysis(shuffledfile, randdict):
+def filerandseq_basicanalysis(shuffledfile, randdict, kmerlength):
     with open(shuffledfile) as f:
         for line in f: #one line corresponds to one sequence at that chromosome location
-            for i in range(0, len(line) - 5):
-                randseq_kmer = line[i:i+5] #makes 5-mer out of next five letters
+            for i in range(0, len(line) - kmerlength):
+                randseq_kmer = line[i:i+kmerlength] #makes k-mer out of next five letters
                 if randseq_kmer not in randdict:
                     randdict[randseq_kmer] = 1
                 else:
