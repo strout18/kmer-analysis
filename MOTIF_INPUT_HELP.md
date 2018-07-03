@@ -1,1 +1,3 @@
+When a function has a motif parameter, you should enter the given motif as a list of nucleotides as strings, using regular expressions in the Python RE library when necessary to specify more than one possibility for a nucleotide: (https://docs.python.org/2/library/re.html) 
 
+For example, the NFKB p65 motif (which can be found here: http://jaspar.genereg.net/matrix/MA0107.1/) could be written (depending on desired specificity) as ['[GCT]',  'G',  'G', '[AG]', '[AGC]', 'T', 'T', 'T', 'C', 'C'], indicating that the first nucleotide in the motif could be G, C, or T, that the second nucleotide will always be G, and so forth until the tenth nucleotide, which will be C. Each item in the list MUST be entered as a string.
