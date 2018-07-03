@@ -1,15 +1,4 @@
-
-# coding: utf-8
-
-# In[ ]:
-
-#NOTES: UPDATE LISTMOSTFREQ SO WRITING TO A FILE IS OPTIONAL
-#UPDATE PLOTLY SO IT EITHER PRINTS INLINE IN THE RUNNING NOTEBOOK OR OPENS URL TO NEW GRAPH
-#COPY OVER PYTHON SCRIPT THAT'S ACTUALLY BEING RUN
-
-
-# In[5]:
-
+#### IMPORT STATEMENTS ####
 import re
 import plotly.plotly as py
 import plotly.graph_objs as go
@@ -17,9 +6,9 @@ import plotly
 import random
 
 
-# In[6]:
+#### TRIM FUNCTION ####
+#params: untrimmedfasta (filename of original fasta), trimmedout (empty file where you want the trimmed sequences to be saved)
 
-#READING FILES
 def trim(untrimmedfasta, trimmedout): #trims FASTA file saved as a .txt by removing chr data and making all nucleotides capitalized
     with open(untrimmedfasta) as f:
         with open(trimmedout, 'w') as f1:
@@ -29,10 +18,10 @@ def trim(untrimmedfasta, trimmedout): #trims FASTA file saved as a .txt by remov
             f1.close()
             f.close()
 
+#### COMPILE FREQUENCY DATA FROM FILE ####
+#inputs: params (dictionary - likely empty unless you're compiling one dict from mult files), trimmedfasta (file containing sequences 
+#w/o chr data), length (length of k-mers desired)
 
-# In[3]:
-
-#kmerdict = EMPTY dict 
 def freq_compile_from_file(kmerdict, trimmedfasta, length):
 #COMPILING DICTIONARY
     with open(trimmedfasta) as f:
@@ -47,7 +36,9 @@ def freq_compile_from_file(kmerdict, trimmedfasta, length):
     print ("Finished!")
 
 
-# In[ ]:
+#### COMPILE FREQUENCY DATA FROM STRING ####
+#params: kmerdict (dictionary - empty unless you're compiling one dict from multiple strings), string (input sequence), length (desired 
+#k-mer length)
 
 def freq_compile_from_string(kmerdict, string, length):
     for i in range(0, len(string) - length):
@@ -57,20 +48,26 @@ def freq_compile_from_string(kmerdict, string, length):
                 kmerdict[kmer] = 1
             else:
                 kmerdict[kmer] += 1
-    #    print ("Finished!")
 
+#### SORT FREQUENCY DICTIONARY ####
+#params: kdict (dictionary already filled with k-mers and corresponding frequencies)
 
-# In[11]:
-
-#SORTING 
-def fsortbycount(kdict): #compiles a sorted list (tuple) of all k-mers with highest count
+def fsortbycount(kdict): #compiles a sorted list (tuple) of all k-mers with highest count in form (k-mer, count)
     sortbycount = sorted(kdict.items(), key = lambda x: x[1], reverse = True)
     return sortbycount
+
+#### LIST ALL K-MERS IN FREQUENCY DICTIONARY ####
+#params: sortedlst (list of tuples obtained from fsortbycount)
+
 def listall(sortedlst): #list all k-mers found
     for x in sortedlst:
         print (x[0], ':', str(x[1]))
-def listmostfreq(sortedlst, cutoff, write_file, fmostfreq = ''): #cutoff is number of kmers to display - e.g. top 25 means cutoff = 25
-    #sortedlst = lst, cutoff = int, write_file = bool, fmostfreq = optional string corresponding to a file
+
+#### LIST MOST FREQUENTLY OCCURRING K-MERS ####
+#params: sortedlst (list of tuples obtained from fsortbycount), cutoff (number of kmers to display- e.g. top 25 means cutoff = 25), 
+#write_file (bool of whether or not to write this list to a file), fmostfreq (optional string corresponding to a file to write to)
+
+def listmostfreq(sortedlst, cutoff, write_file, fmostfreq = ''): 
     i = 0
     if write_file:
         with open(fmostfreq, 'w') as f:
@@ -86,10 +83,10 @@ def listmostfreq(sortedlst, cutoff, write_file, fmostfreq = ''): #cutoff is numb
                 print (sortedlst[i][0], ':', str(sortedlst[i][1]))
                 i += 1
 
+#### COMPARE FREQUENCIES OF K-MERS FROM A DESIRED MOTIF TO ALL K-MER FREQUENCIES ####
+#params: sortedlst (list of tuples obtained from fsortbycount), kdict (completed dict of frequencies for all k-mers), motif in regex list
+#form (SEE MOTIFINPUTHELP.MD), k-merlength (length of k-mers in frequency dictionary)
 
-# In[14]:
-
-#PARAMS: SORTED LIST OF KMERS, FREQ DICT, MOTIF, KMER LENGTH
 def motif_analysis(sortedlst, kdict, motif, kmerlength): 
     sums = 0
     length = 0
@@ -111,9 +108,12 @@ def motif_analysis(sortedlst, kdict, motif, kmerlength):
     return sorted_motif_kmers
 
 
-# In[4]:
+#### USE PLOTLY TO CREATE GRAPH OF ALL K-MERS AND COMPARE WITH MOTIF K-MERS WITH LINES TRACED TO MOTIF LABELS ####
+#YOU MUST HAVE A PLOTLY ACCOUNT TO USE THIS FUNCTION (https://plot.ly/)
+#params: sortedall (list of tuples of all k-mers obtained from fsortbycount), sorted_motif (list of k-mers occurring in given motif, this 
+#is the result of the function motif_analysis), kdict (dict of all k-mers and their counts), graphtitle (desired graph title), 
+#url (desired filename of the graph on the plot.ly website), gmode (graph mode, 'lines', 'markers', or 'lines+markers')
 
-#PLOTLY
 def plotwithmotiflines(sortedall, sorted_motif, kdict, graphtitle, url, gmode = 'lines'):
     names = [x[0] for x in sortedall] #plots kmer vs frequency
     values = [x[1] for x in sortedall]
@@ -151,8 +151,8 @@ def plotwithmotiflines(sortedall, sorted_motif, kdict, graphtitle, url, gmode = 
         annlst.append(anndict)
         shapelst.append(shapedict)
 
-
-    plotly.tools.set_credentials_file(username='StellaTrout', api_key='sygEgpmtf2kyR8TYxVFV')
+	
+    plotly.tools.set_credentials_file(username='_____', api_key='______') #INSERT YOUR USERNAME AND API KEY HERE
 
     trace0 = go.Scatter(
         x= names,
@@ -182,7 +182,9 @@ def plotwithmotiflines(sortedall, sorted_motif, kdict, graphtitle, url, gmode = 
     py.iplot(fig, filename = url)
 
 
-# In[16]:
+#### USE PLOTLY TO CREATE GRAPH OF ALL K-MERS AND COMPARE WITH MOTIF K-MERS #### 
+#YOU MUST HAVE A PLOTLY ACCOUNT TO USE THIS FUNCTION (https://plot.ly/)
+#params: see plotwithmotiflines
 
 #PLOTLY
 def plotwithmotif(sortedall, sorted_motif, kdict, graphtitle, url, gmode = 'lines'):
@@ -215,7 +217,9 @@ def plotwithmotif(sortedall, sorted_motif, kdict, graphtitle, url, gmode = 'line
     py.iplot(fig, filename = url)
 
 
-# In[ ]:
+#### USE PLOTLY TO GRAPH K-MERS AND THEIR CORRESPONDING FREQUENCIES ####
+#YOU MUST HAVE A PLOTLY ACCOUNT TO USE THIS FUNCTION (https://plot.ly/)
+#params: see plotwithmotiflines
 
 #PLOTLY
 def plotbasic(sortedall, graphtitle, url, gmode = 'lines'):
@@ -241,7 +245,9 @@ def plotbasic(sortedall, graphtitle, url, gmode = 'lines'):
     py.iplot(fig, filename = url)
 
 
-# In[8]:
+#### READ IN A FILE OF SEQUENCES, RANDOMLY SHUFFLE BY LINE AND WRITE THESE RANDOMIZED SEQUENCES TO A NEW FILE ####
+#params: trimmedfasta (filename of sequences w/o chr data), shuffledfile (location of file to write shuffled sequences to), 
+#dinucshuff (bool, if True maintain dinucleotide frequencies when shuffling), timestoshuffle (integer # of times to shuffle)
 
 def filerandseq(trimmedfasta, shuffledfile, dinucshuff, timestoshuffle):
     def dinucl(lst):
@@ -273,7 +279,8 @@ def filerandseq(trimmedfasta, shuffledfile, dinucshuff, timestoshuffle):
             f.close()
 
 
-# In[ ]:
+#### READ IN A SEQUENCE STRING, RANDOMLY SHUFFLE AND RETURN IT ####
+#params: string (input sequence w/o chr data), see filerandseq
 
 def stringrandseq(string, dinucshuff, timestoshuffle):
     def dinucl(lst):
@@ -299,10 +306,9 @@ def stringrandseq(string, dinucshuff, timestoshuffle):
     shuffled_kmers_str = ''.join(shuffled_kmers)
     return shuffled_kmers_str
 
+#### COMPILE DATA ON K-MERS FROM RANDOM FILE ####
+#params: shuffledfile (filename of file containing shuffled sequences), randdict (empty dictionary unless compiling from mult files)
 
-# In[17]:
-
-#COMPILE DATA ON KMERS FROM RANDOM FILE
 def filerandseq_basicanalysis(shuffledfile, randdict):
     with open(shuffledfile) as f:
         for line in f: #one line corresponds to one sequence at that chromosome location
@@ -316,22 +322,24 @@ def filerandseq_basicanalysis(shuffledfile, randdict):
     print ("Finished!")
     randseq_sortedlst = fsortbycount(randdict) #sorts rand kmers by frequency
     return randseq_sortedlst
+
+#### COMPARE FREQUENCIES OF K-MERS FROM A GIVEN MOTIF TO ALL K-MER FREQUENCIES ####
+#params: see motif_analysis
+
 def randseq_motifanalysis(randsortedlst, kdict, motif, kmerlength):
     randseq_motif_sorted = motif_analysis(randsortedlst, kdict, motif, kmerlength)
     return randseq_motif_sorted
 
-
-# In[ ]:
-
-#COMPILE DATA ON KMERS FROM RANDOM FILE
-def stringrandseq_basicanalysis(randdict, string, length):
+#### COMPILE DATA ON K-MERS FROM A SHUFFLED STRING ####
+#params: string ( string containing shuffled sequence), randdict (empty dict unless compiling one dict from mult strings), length (k-mer
+#length)
+def stringrandseq_basicanalysis(string, randdict, length):
     for i in range(0, len(string) - length):
         randseq_kmer = line[i:i+length] #makes 5-mer out of next five letters
         if randseq_kmer not in randdict:
             randdict[randseq_kmer] = 1
         else:
             randdict[randseq_kmer] += 1
-    print ("Finished!")
     randseq_sortedlst = fsortbycount(randseq_kmerdict) #sorts rand kmers by frequency
     return randseq_sortedlst
 
