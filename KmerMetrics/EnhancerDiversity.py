@@ -1,8 +1,11 @@
-def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T'):
+#params: kmerlength (int), gene_seq (dict in form geneID, sequence- COMPILE THIS FROM REUSABLEKMERGENERATOR!!!!), show_updownkmers (bool
+#showing all k-mers and whether they appear more in up or downregulated genes)
+def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True):
     print ('Kmers of length', kmerlength)
     freq_dict = {}
     for key in gene_seq:
-        freqfunc.freq_compile_from_string(freq_dict, gene_seq[key], kmerlength)
+        freqfunc.freq_compile_from_string(freq_dict, gene_seq[key], kmerlength) #REUSABLEKMERGENERATOR.PY SHOULD BE IMPORTED AS FREQFUNC
+        #IN MAIN PROGRAM (you can import as something else but then must change 'freqfunc' in this module as well)
     sorted_all = freqfunc.fsortbycount(freq_dict)
     upreg = {} #dict of genes and their corresponding fold changes
     downreg = {}
@@ -20,15 +23,15 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T')
     for key in downreg.keys():
         freqfunc.freq_compile_from_string(downregfreq, gene_seq[key], kmerlength)
     downregfreq_sorted = freqfunc.fsortbycount(downregfreq)
-    #LST MUST BE SORTED
     upregdiff = {}
     downregdiff = {}
-    def freq_compare(lst1, lst2, dct1, dct2): #IF LST = UPREG, OPPDICT MUST EQUAL DOWNREG
+    def freq_compare(lst1, lst2, dct1, dct2): #lst1, dct1 = sortedlst and freqdict for upreg genes, lst2, dict2 = same for downreg genes
+        #up and down can be switched, but lst1 and dct1 must always have same gene regulation (up or down)
         dct1sum = sum(dct1.values())
         dct2sum = sum(dct2.values())
         for i in range(len(lst1)): #loops through upreg
             kmer = lst1[i][0]
-            pct1 = int(lst1[i][1]) / dct1sum
+            pct1 = int(lst1[i][1]) / dct1sum #percent k-mer frequency comprises of sum of all k-mer frequencies
             if kmer in dct2.keys():
                 pct2 = int(dct2[kmer]) / dct2sum
             else:
@@ -70,12 +73,5 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True, nuc = 'T')
         print ("%s / %s = %s" % (count, len(downregdiffsorted), count/ len(downregdiffsorted)))  
     except ZeroDivisionError:
         pass
-    numcutoff = 200
-    if len(upregdiffsorted) < 200 or len(downregdiffsorted) < 200:
-        if len(upregdiffsorted) > len(downregdiffsorted):
-            numcutoff = len(downregdiffsorted)
-        else:
-            numcutoff = len(upregdiffsorted)
-    print ('Cutoff:', numcutoff)
-    outputlst = [freq_dict, upregfreq, downregfreq, upregdiff, downregdiff] 
+    outputlst = [freq_dict, upregfreq, downregfreq, upregdiff, downregdiff] #useful to store in a var in main program 
     return outputlst
