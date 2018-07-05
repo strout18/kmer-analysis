@@ -58,20 +58,5 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True):
 
         for x in downregdiffsorted:
             print ('Down:', x[0], ':', x[1])
-    count = 0
-    for x in upregdiffsorted:
-        if len(set(x[0])) > 2:
-            count += 1
-    print (count, 'diverse k-mers out of', len(upregdiffsorted), 'that comprise a greater percent of all kmers in upregulated genes.')
-    print ("%s / %s = %s" % (count, len(upregdiffsorted), count/ len(upregdiffsorted)))
-    count = 0
-    for x in downregdiffsorted:
-        if len(set(x[0])) > 2:
-            count += 1
-    print (count, 'diverse k-mers out of', len(downregdiffsorted), 'that comprise a greater percent of all kmers in downregulated genes.')
-    try:
-        print ("%s / %s = %s" % (count, len(downregdiffsorted), count/ len(downregdiffsorted)))  
-    except ZeroDivisionError:
-        pass
     outputlst = [freq_dict, upregfreq, downregfreq, upregdiff, downregdiff] #useful to store in a var in main program 
     return outputlst
