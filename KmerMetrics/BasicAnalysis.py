@@ -1,5 +1,5 @@
 #### SORT K-MERS BY GENE EXPRESSION ####
-#params: kmerlength (int), gene_seq (dict in form geneID, sequence- COMPILE THIS FROM REUSABLEKMERGENERATOR!!!!), show_updownkmers (bool
+#params: kmerlength (int), gene_seq (dict in form geneID, sequence- COMPILE THIS FROM IMPORTTRIMPROCESS.PY!!!!), show_updownkmers (bool
 #showing all k-mers and whether they appear more in up or downregulated genes)
 def basic_analysis(kmerlength, gene_seq, show_updownkmers = True):
     print ('Kmers of length', kmerlength)
