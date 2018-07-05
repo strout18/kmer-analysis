@@ -1,6 +1,7 @@
+#### SORT K-MERS BY GENE EXPRESSION ####
 #params: kmerlength (int), gene_seq (dict in form geneID, sequence- COMPILE THIS FROM REUSABLEKMERGENERATOR!!!!), show_updownkmers (bool
 #showing all k-mers and whether they appear more in up or downregulated genes)
-def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True):
+def basic_analysis(kmerlength, gene_seq, show_updownkmers = True):
     print ('Kmers of length', kmerlength)
     freq_dict = {}
     for key in gene_seq:
@@ -25,6 +26,7 @@ def enhancer_diversity(kmerlength, gene_seq, show_updownkmers = True):
     downregfreq_sorted = freqfunc.fsortbycount(downregfreq)
     upregdiff = {}
     downregdiff = {}
+    #### COMPARE FREQUENCIES FOR EACH K-MER - SUBFUNCTION ####
     def freq_compare(lst1, lst2, dct1, dct2): #lst1, dct1 = sortedlst and freqdict for upreg genes, lst2, dict2 = same for downreg genes
         #up and down can be switched, but lst1 and dct1 must always have same gene regulation (up or down)
         dct1sum = sum(dct1.values())
