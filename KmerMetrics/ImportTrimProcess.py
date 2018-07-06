@@ -1,5 +1,5 @@
 peakfasta = "" #PUT YOUR FASTA FILE HERE
-rtable = "" #PUT YOUR DATA TABLE HERE (SEE DATAPROCESSING.R)
+rtable = "" #PUT YOUR DATA TABLE HERE 
 import csv 
 gene2enhancer = {} #dict in form geneID: chr+start+stop
 enhancer2gene = {} 
