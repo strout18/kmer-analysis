@@ -1,5 +1,5 @@
 # kmer-analysis
-Analyze different features of k-mers 
+This project contains code for analyzing different features of k-mers. 
 
 Built with Python by Stella Trout
 
